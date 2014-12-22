@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="sri.sri.happy" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -15,6 +17,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".RealCardsActivity"
+            android:label="@string/title_activity_real_cards" >
+        </activity>
+        <activity
+            android:name=".TwitterOAuthActivity"
+            android:label="@string/title_activity_twitter_oauth" >
+        </activity>
+        <activity
+            android:name=".CardsActivity"
+            android:label="@string/title_activity_cards" >
         </activity>
     </application>
 
