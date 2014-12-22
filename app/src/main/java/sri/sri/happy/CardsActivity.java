@@ -132,7 +132,7 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
         @Override
         public void onSaveInstanceState(Bundle outState) {
             super.onSaveInstanceState(outState);
-            outState.putInt("curChoice", mCurCheckPosition);
+//            outState.putInt("curChoice", mCurCheckPosition);
         }
 
         @Override
