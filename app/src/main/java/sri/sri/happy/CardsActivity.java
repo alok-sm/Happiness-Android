@@ -1,5 +1,6 @@
 package sri.sri.happy;
 
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -21,6 +22,10 @@ import com.andtinder.model.CardModel;
 import com.andtinder.view.CardContainer;
 import com.andtinder.view.SimpleCardStackAdapter;
 
+import java.io.File;
+
+import twitter4j.conf.ConfigurationBuilder;
+
 
 public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
 
@@ -34,6 +39,17 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cards);
+
+//        SharedPreferences pref;
+//        pref = getPreferences(0);
+//        ConfigurationBuilder cb = new ConfigurationBuilder();
+//        cb.setDebugEnabled(true)
+//                .setOAuthAccessToken(pref.getString("ACCESS_TOKEN", ""))
+//                .setOAuthAccessTokenSecret(pref.getString("ACCESS_TOKEN_SECRET", ""))
+//                .setOAuthConsumerKey(MainActivity.CONSUMER_KEY)
+//                .setOAuthConsumerSecret(MainActivity.CONSUMER_SECRET);
+//        String url = TwitterUtils.PostToTwitter(new File("/sdcard/pic.jpg"),"testing upload",cb);
+//        Log.e("url ", url);
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getSupportActionBar();
