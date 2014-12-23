@@ -3,6 +3,8 @@ package sri.sri.happy;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -12,6 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 
@@ -56,31 +60,84 @@ public class CameraActivity extends ActionBarActivity {
         return true;
     }
 
+    int resultcode;
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode != Activity.RESULT_OK){
+    protected void onActivityResult(int _requestCode, int _resultCode, Intent data) {
+        resultcode = _resultCode;
+        String path = Environment.getExternalStorageDirectory() + "/pic1.jpg";
+        File file = new File(path);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+
+
+        ImageView v = (ImageView) findViewById(R.id.imageView);
+        v.setImageURI(Uri.fromFile(file));
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void report(View view) {
+
+        if (resultcode != Activity.RESULT_OK) {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            String path = Environment.getExternalStorageDirectory()+"/pic1.jpg";
+            String path = Environment.getExternalStorageDirectory() + "/pic1.jpg";
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(path)));
             startActivityForResult(intent, 0);
-        }else{
-            String path = Environment.getExternalStorageDirectory() + "/pic1.jpg";
-            File file = new File(path);
-            ImageView v = (ImageView) findViewById(R.id.imageView);
-            v.setImageURI(Uri.fromFile(file));
+        } else {
+
 
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            SimpleLocation location = new SimpleLocation(this);
+            double lati = 0;
+            double longi = 0;
+            if (location.hasLocationEnabled()) {
+                // ask the device to update the location data
+                location.beginUpdates();
 
+
+                // get the location from the device (alternative A)
+                lati = location.getLatitude();
+                longi = location.getLongitude();
+
+                // get the location from the device (alternative B)
+//                SimpleLocation.Point coords = location.getPosition();
+
+                // ask the device to stop location updates to save battery
+                location.endUpdates();
+            } else {
+                // ask the user to enable location access
+                location.openSettings(this);
+            }
+            EditText et = (EditText) findViewById(R.id.editText);
             RequestParams params = new RequestParams();
             params.put("access_token", pref.getString("ACCESS_TOKEN", ""));
             params.put("access_token_secret", pref.getString("ACCESS_TOKEN_SECRET", ""));
-            params.put("caption", "Hello World 1 ~Android");
-            params.put("lat", "75.1");
-            params.put("lon", "75.1");
+            params.put("caption", et.getText().toString());
+            params.put("lat", lati);
+            params.put("lon", longi);
             params.put("user", "1");
             try {
                 params.put("image", new File(Environment.getExternalStorageDirectory() + "/pic1.jpg"), "image/jpg");
-            }catch(FileNotFoundException f){
+            } catch (FileNotFoundException f) {
                 f.printStackTrace();
                 Log.e("NO FILE", "NO FILE");
             }
@@ -97,23 +154,6 @@ public class CameraActivity extends ActionBarActivity {
                     Log.e("FAIL", "FAIL");
                 }
             });
-
-
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -3,6 +3,8 @@ package sri.sri.happy;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -163,7 +165,10 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
             SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
 
             for(int i = 0; i<100; i++) {
-                final CardModel cardModel = new CardModel("Title"+i, " ", r.getDrawable(R.drawable.picture1));
+//                final CardModel cardModel = new CardModel("Title"+i, " ", r.getDrawable(R.drawable.picture1));
+                final CardModel cardModel = new CardModel("Title"+i, " ", Drawable.createFromPath(
+                        Environment.getExternalStorageDirectory() + "/pic.jpg"
+                ));
                 cardModel.setOnClickListener(new CardModel.OnClickListener() {
                     @Override
                     public void OnClickListener() {
