@@ -1,22 +1,20 @@
 package sri.sri.happy;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import com.andtinder.model.CardModel;
 import com.andtinder.view.CardContainer;
@@ -24,6 +22,12 @@ import com.andtinder.view.SimpleCardStackAdapter;
 
 import java.io.File;
 
+import twitter4j.Status;
+import twitter4j.StatusUpdate;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 
@@ -40,16 +44,15 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cards);
 
-//        SharedPreferences pref;
-//        pref = getPreferences(0);
-//        ConfigurationBuilder cb = new ConfigurationBuilder();
-//        cb.setDebugEnabled(true)
-//                .setOAuthAccessToken(pref.getString("ACCESS_TOKEN", ""))
-//                .setOAuthAccessTokenSecret(pref.getString("ACCESS_TOKEN_SECRET", ""))
-//                .setOAuthConsumerKey(MainActivity.CONSUMER_KEY)
-//                .setOAuthConsumerSecret(MainActivity.CONSUMER_SECRET);
-//        String url = TwitterUtils.PostToTwitter(new File("/sdcard/pic.jpg"),"testing upload",cb);
-//        Log.e("url ", url);
+//        Thread t = new Thread() {
+//            @Override
+//            public void run() {
+//                String url = postToTwitter(new File("/sdcard/pic.jpg"), "pls work upload");
+//                Log.e("url ", url);
+//            }
+//        };
+//
+//        t.start();
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getSupportActionBar();
@@ -188,6 +191,51 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
 
             return rootView;
         }
+    }
+
+//    public String postToTwitter(File file, String message){
+//        ConfigurationBuilder builder = new ConfigurationBuilder();
+//
+//        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+//
+//        builder.setOAuthConsumerKey(pref.getString("CONSUMER_KEY", ""));
+//        builder.setOAuthConsumerSecret(pref.getString("CONSUMER_SECRET", ""));
+//
+//        AccessToken accessToken = new AccessToken(pref.getString("ACCESS_TOKEN", ""), pref.getString("ACCESS_TOKEN_SECRET", ""));
+//        Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
+//
+//        Log.e(pref.getString("ACCESS_TOKEN", ""), "access token");
+//        Log.e(pref.getString("ACCESS_TOKEN_SECRET", ""), "access secret");
+//        Log.e(pref.getString("CONSUMER_KEY", ""), "consumer key");
+//        Log.e(pref.getString("CONSUMER_SECRET", ""), "consumer secret");
+//
+//        StatusUpdate statusUpdate;
+//        Status status = null;
+//
+//        statusUpdate = new StatusUpdate(message);
+//        statusUpdate.setMedia(file);
+//        try{
+//            status = twitter.updateStatus(statusUpdate);
+//        }catch(TwitterException e){
+//            e.printStackTrace();
+//        }
+//        String ret;
+//        try{
+//            ret = status.getMediaEntities()[0].getMediaURL();
+//        }catch(NullPointerException e){
+//            try {
+//                ret = status.getText();
+//            }catch (Exception e1){
+//                ret = "another error";
+//                if(status == null)
+//                    ret = "status is null";
+//            }
+//        }
+//        return ret;
+//    }
+
+    public void newPost(MenuItem m){
+        startActivity(new Intent(this, CameraActivity.class));
     }
 
 }
