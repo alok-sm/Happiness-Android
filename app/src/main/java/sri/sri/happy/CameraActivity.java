@@ -27,6 +27,7 @@ import org.apache.http.Header;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 
 public class CameraActivity extends ActionBarActivity {
@@ -72,10 +73,27 @@ public class CameraActivity extends ActionBarActivity {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
 
+        int x = bm.getWidth();
+        int y = bm.getHeight();
+
+
+        if(x>y){
+            bm = Bitmap.createBitmap(bm, (int)((x-y)/2), 0, y, y);
+        }else{
+            bm = Bitmap.createBitmap(bm, 0, (int)((y-x)/2), x, x);
+        }
+        bm = Bitmap.createScaledBitmap(bm, 500, 500, false);
 
 
         ImageView v = (ImageView) findViewById(R.id.imageView);
-        v.setImageURI(Uri.fromFile(file));
+        v.setImageBitmap(bm);
+        File f2 = new File(Environment.getExternalStorageDirectory()+"/pic2.jpg");
+        try{
+            FileOutputStream fOut = new FileOutputStream(f2);
+            bm.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+        }catch(Exception e){}
     }
 
 
@@ -99,7 +117,7 @@ public class CameraActivity extends ActionBarActivity {
 
         if (resultcode != Activity.RESULT_OK) {
             Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            String path = Environment.getExternalStorageDirectory() + "/pic1.jpg";
+            String path = Environment.getExternalStorageDirectory() + "/pic2.jpg";
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(path)));
             startActivityForResult(intent, 0);
         } else {
@@ -134,9 +152,9 @@ public class CameraActivity extends ActionBarActivity {
             params.put("caption", et.getText().toString());
             params.put("lat", lati);
             params.put("lon", longi);
-            params.put("user", "1");
+            params.put("user", pref.getString("USER_ID", ""));
             try {
-                params.put("image", new File(Environment.getExternalStorageDirectory() + "/pic1.jpg"), "image/jpg");
+                params.put("image", new File(Environment.getExternalStorageDirectory() + "/pic2.jpg"), "image/jpg");
             } catch (FileNotFoundException f) {
                 f.printStackTrace();
                 Log.e("NO FILE", "NO FILE");

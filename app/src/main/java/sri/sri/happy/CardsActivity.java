@@ -3,6 +3,9 @@ package sri.sri.happy;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -39,6 +42,8 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
      * The serialization (saved instance state) Bundle key representing the
      * current dropdown position.
      */
+
+    public static int sectionNumber = 0;
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
     @Override
@@ -118,6 +123,7 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
     public boolean onNavigationItemSelected(int position, long id) {
         // When the given dropdown item is selected, show its contents in the
         // container view.
+        sectionNumber = position;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
@@ -158,86 +164,95 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//            Bundle args = new Bundle();
+            Log.e("CONTAINER ID: ", ""+ sectionNumber);
+            if(sectionNumber == 0) {
+                View rootView = inflater.inflate(R.layout.fragment_cards, container, false);
+                CardContainer mCardContainer = (CardContainer) rootView.findViewById(R.id.layoutview);
+                Resources r = getResources();
+                SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap bm = BitmapFactory.decodeFile(
+                        Environment.getExternalStorageDirectory() + "/pic2.jpg", options);
+                for (int i = 0; i < 10; i++) {
+                    //                final CardModel cardModel = new CardModel("Title"+i, " ", r.getDrawable(R.drawable.picture1));
+                    final CardModel cardModel = new CardModel("Title" + i, " ",
+                            new BitmapDrawable(getResources(),
+                                    Bitmap.createScaledBitmap(bm, 800, 600, false)
+                            )
+                    );
+                    cardModel.setOnClickListener(new CardModel.OnClickListener() {
+                        @Override
+                        public void OnClickListener() {
+                            Log.i("places Swipeable Cards", "I am pressing the card");
+                        }
 
-            View rootView = inflater.inflate(R.layout.fragment_cards, container, false);
-            CardContainer mCardContainer = (CardContainer) rootView.findViewById(R.id.layoutview);
-            Resources r = getResources();
-            SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
+                    });
 
-            for(int i = 0; i<100; i++) {
-//                final CardModel cardModel = new CardModel("Title"+i, " ", r.getDrawable(R.drawable.picture1));
-                final CardModel cardModel = new CardModel("Title"+i, " ", Drawable.createFromPath(
-                        Environment.getExternalStorageDirectory() + "/pic.jpg"
-                ));
-                cardModel.setOnClickListener(new CardModel.OnClickListener() {
-                    @Override
-                    public void OnClickListener() {
-                        Log.i("Swipeable Cards", "I am pressing the card");
-                    }
+                    cardModel.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
+                        @Override
+                        public void onLike() {
+                            Log.i("places Swipeable Cards", "I like the card");
+                        }
 
-                });
+                        @Override
+                        public void onDislike() {
+                            Log.i("places Swipeable Cards", "I dislike the card");
+                        }
+                    });
 
-                cardModel.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
-                    @Override
-                    public void onLike() {
-                        Log.i("Swipeable Cards", "I like the card");
-                    }
+                    adapter.add(cardModel);
+                }
+                mCardContainer.setAdapter(adapter);
 
-                    @Override
-                    public void onDislike() {
-                        Log.i("Swipeable Cards", "I dislike the card");
-                    }
-                });
 
-                adapter.add(cardModel);
+                return rootView;
+            }else{
+                View rootView = inflater.inflate(R.layout.fragment_cards, container, false);
+                CardContainer mCardContainer = (CardContainer) rootView.findViewById(R.id.layoutview);
+                Resources r = getResources();
+                SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap bm = BitmapFactory.decodeFile(
+                        Environment.getExternalStorageDirectory() + "/pic2.jpg", options);
+                for (int i = 0; i < 10; i++) {
+                    //                final CardModel cardModel = new CardModel("Title"+i, " ", r.getDrawable(R.drawable.picture1));
+                    final CardModel cardModel = new CardModel("Title" + i, " ",
+                            new BitmapDrawable(getResources(),
+                                    Bitmap.createScaledBitmap(bm, 800, 600, false)
+                            )
+                    );
+                    cardModel.setOnClickListener(new CardModel.OnClickListener() {
+                        @Override
+                        public void OnClickListener() {
+                            Log.i("actions Swipeable Cards", "I am pressing the card");
+                        }
+
+                    });
+
+                    cardModel.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
+                        @Override
+                        public void onLike() {
+                            Log.i("actions Swipeable Cards", "I like the card");
+                        }
+
+                        @Override
+                        public void onDislike() {
+                            Log.i("actions Swipeable Cards", "I dislike the card");
+                        }
+                    });
+
+                    adapter.add(cardModel);
+                }
+                mCardContainer.setAdapter(adapter);
+
+
+                return rootView;
             }
-            mCardContainer.setAdapter(adapter);
-
-
-            return rootView;
         }
     }
-
-//    public String postToTwitter(File file, String message){
-//        ConfigurationBuilder builder = new ConfigurationBuilder();
-//
-//        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-//
-//        builder.setOAuthConsumerKey(pref.getString("CONSUMER_KEY", ""));
-//        builder.setOAuthConsumerSecret(pref.getString("CONSUMER_SECRET", ""));
-//
-//        AccessToken accessToken = new AccessToken(pref.getString("ACCESS_TOKEN", ""), pref.getString("ACCESS_TOKEN_SECRET", ""));
-//        Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
-//
-//        Log.e(pref.getString("ACCESS_TOKEN", ""), "access token");
-//        Log.e(pref.getString("ACCESS_TOKEN_SECRET", ""), "access secret");
-//        Log.e(pref.getString("CONSUMER_KEY", ""), "consumer key");
-//        Log.e(pref.getString("CONSUMER_SECRET", ""), "consumer secret");
-//
-//        StatusUpdate statusUpdate;
-//        Status status = null;
-//
-//        statusUpdate = new StatusUpdate(message);
-//        statusUpdate.setMedia(file);
-//        try{
-//            status = twitter.updateStatus(statusUpdate);
-//        }catch(TwitterException e){
-//            e.printStackTrace();
-//        }
-//        String ret;
-//        try{
-//            ret = status.getMediaEntities()[0].getMediaURL();
-//        }catch(NullPointerException e){
-//            try {
-//                ret = status.getText();
-//            }catch (Exception e1){
-//                ret = "another error";
-//                if(status == null)
-//                    ret = "status is null";
-//            }
-//        }
-//        return ret;
-//    }
 
     public void newPost(MenuItem m){
         startActivity(new Intent(this, CameraActivity.class));

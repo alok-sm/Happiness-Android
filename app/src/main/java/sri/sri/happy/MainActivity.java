@@ -45,7 +45,7 @@ public class MainActivity extends ActionBarActivity {
             ft.commit();
         }
         else{
-            startActivity(new Intent(this, CardsActivity.class));
+            startActivity(new Intent(this, DisplayActivity.class));
             finish();
         }
     }
