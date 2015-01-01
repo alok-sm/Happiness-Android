@@ -38,6 +38,14 @@
             android:name=".DisplayActivity"
             android:label="Profile" >
         </activity>
+        <activity
+            android:name=".PlacesDisplayActivity"
+            android:label="@string/title_activity_places_display" >
+        </activity>
+        <activity
+            android:name=".ActionsDisplayActivity"
+            android:label="@string/title_activity_actions_display" >
+        </activity>
     </application>
 
 </manifest>

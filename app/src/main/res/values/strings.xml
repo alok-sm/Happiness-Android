@@ -12,5 +12,7 @@
     <string name="title_section3">Section 3</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_places_display">PlacesDisplayActivity</string>
+    <string name="title_activity_actions_display">ActionsDisplayActivity</string>
 
 </resources>

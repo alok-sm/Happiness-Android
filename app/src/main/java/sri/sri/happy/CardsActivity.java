@@ -26,6 +26,8 @@ import com.andtinder.view.CardContainer;
 import com.andtinder.view.SimpleCardStackAdapter;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -135,6 +137,8 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
      */
     public static class PlaceholderFragment extends Fragment {
 
+        private boolean liked;
+        private boolean disliked;
 
         /**
          * The fragment argument representing the section number for this
@@ -176,16 +180,33 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                 Bitmap bm = BitmapFactory.decodeFile(
                         Environment.getExternalStorageDirectory() + "/pic2.jpg", options);
                 for (int i = 0; i < 10; i++) {
-                    //                final CardModel cardModel = new CardModel("Title"+i, " ", r.getDrawable(R.drawable.picture1));
-                    final CardModel cardModel = new CardModel("Title" + i, " ",
+                    CardModel cardModel = new CardModel("Title" + i, " ",
                             new BitmapDrawable(getResources(),
                                     Bitmap.createScaledBitmap(bm, 800, 600, false)
                             )
                     );
+//                    cardModel.set
                     cardModel.setOnClickListener(new CardModel.OnClickListener() {
                         @Override
                         public void OnClickListener() {
                             Log.i("places Swipeable Cards", "I am pressing the card");
+//                            startActivity(new Intent(getActivity(), PlacesDisplayActivity.class));
+                            liked = false;
+                            disliked = false;
+
+                            Timer timer = new Timer();
+                            timer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    if(liked){
+                                        Log.e("places Swipeable Cards", "I like the card");
+                                    }else if(disliked){
+                                        Log.e("places Swipeable Cards", "I dislike the card");
+                                    }else{
+                                        Log.e("places Swipeable cards", "I clicked the card");
+                                    }
+                                }
+                            }, 1000);
                         }
 
                     });
@@ -193,12 +214,15 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                     cardModel.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
                         @Override
                         public void onLike() {
-                            Log.i("places Swipeable Cards", "I like the card");
+
+//                            getActivity().finish();
+                            disliked = true;
                         }
 
                         @Override
                         public void onDislike() {
-                            Log.i("places Swipeable Cards", "I dislike the card");
+//                            getActivity().finish();
+                            liked = true;
                         }
                     });
 
@@ -218,7 +242,6 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                 Bitmap bm = BitmapFactory.decodeFile(
                         Environment.getExternalStorageDirectory() + "/pic2.jpg", options);
                 for (int i = 0; i < 10; i++) {
-                    //                final CardModel cardModel = new CardModel("Title"+i, " ", r.getDrawable(R.drawable.picture1));
                     final CardModel cardModel = new CardModel("Title" + i, " ",
                             new BitmapDrawable(getResources(),
                                     Bitmap.createScaledBitmap(bm, 800, 600, false)
@@ -227,7 +250,24 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                     cardModel.setOnClickListener(new CardModel.OnClickListener() {
                         @Override
                         public void OnClickListener() {
-                            Log.i("actions Swipeable Cards", "I am pressing the card");
+//                            startActivity(new Intent(getActivity(), ActionsDisplayActivity.class));
+                            liked = false;
+                            disliked = false;
+
+                            Timer timer = new Timer();
+                            timer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    if(liked){
+                                        Log.e("actions Swipeable Cards", "I like the card");
+                                    }else if(disliked){
+                                        Log.e("actions Swipeable Cards", "I dislike the card");
+                                    }else{
+                                        Log.e("actions Swipeable cards", "I clicked the card");
+                                    }
+                                }
+                            }, 1000);
+
                         }
 
                     });
@@ -235,12 +275,12 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                     cardModel.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
                         @Override
                         public void onLike() {
-                            Log.i("actions Swipeable Cards", "I like the card");
+                            disliked = true;
                         }
 
                         @Override
                         public void onDislike() {
-                            Log.i("actions Swipeable Cards", "I dislike the card");
+                            liked = true;
                         }
                     });
 
