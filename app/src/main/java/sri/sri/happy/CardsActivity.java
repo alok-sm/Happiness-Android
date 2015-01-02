@@ -28,6 +28,7 @@ import com.andtinder.view.CardContainer;
 import com.andtinder.view.SimpleCardStackAdapter;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.apache.http.Header;
 
@@ -53,7 +54,7 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
 
     public static int sectionNumber = 0;
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-    static SharedPreferences pref;
+   static SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,11 +220,11 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                 pb.setVisibility(View.GONE);
                             }
                         });
-                        for(String postitem:postArr){
+                        for(final String postitem:postArr){
                             topOfStack[0]++;
                             final String[] items = postitem.split("`,");
                             CardModel cardModel = new CardModel(items[1], " ",getResources().getDrawable(R.drawable.placeholder));
-                            cardModel.setCardImageDrawable(new BitmapDrawable(getResources(), ));
+                            cardModel.setCardImageDrawable(new BitmapDrawable(getResources() ));
                             new Img2CardView(getActivity(), cardModel).execute(items[2]);
                             cardModel.setOnClickListener(new CardModel.OnClickListener() {
                                 @Override
@@ -233,15 +234,41 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                     disliked = false;
 
                                     Timer timer = new Timer();
+
                                     timer.schedule(new TimerTask() {
                                         @Override
                                         public void run() {
                                             if(liked){
-                                                Log.e("places Swipeable Cards", "I like the card "+topOfStack[0]);
+                                                Log.e("places Swipeable Cards", "I like the card "+topOfStack[0]+items[1]);
+                                                SyncHttpClient client = new SyncHttpClient();
+                                                String likeurl = "http://gentle-bayou-7778.herokuapp.com/android/upvotePlace?place="+items[0]+"&user="+pref.getString("USER_ID", "");
+                                                client.get(likeurl,new AsyncHttpResponseHandler() {
+                                                    @Override
+                                                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                                        System.out.println("sucessfully liked shiz00");
+                                                    }
 
+                                                    @Override
+                                                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                                                    }
+                                                });
                                                 topOfStack[0]--;
                                             }else if(disliked){
                                                 Log.e("places Swipeable Cards", "I dislike the card "+topOfStack[0]);
+                                                SyncHttpClient client = new SyncHttpClient();
+                                                String likeurl = "http://gentle-bayou-7778.herokuapp.com/android/downvotePlace?place="+items[0]+"&user="+pref.getString("USER_ID", "");
+                                                client.get(likeurl,new AsyncHttpResponseHandler() {
+                                                    @Override
+                                                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                                        System.out.println("sucessfully disliked shiz00");
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                                                    }
+                                                });
                                                 topOfStack[0]--;
                                             }else{
                                                 Log.e("places Swipeable cards", "I clicked the card "+topOfStack[0]);
@@ -257,11 +284,13 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                 @Override
                                 public void onLike() {
                                     disliked = true;
-                                }
+
+                              }
 
                                 @Override
                                 public void onDislike() {
                                     liked = true;
+
                                 }
                             });
 
