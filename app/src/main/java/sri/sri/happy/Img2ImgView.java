@@ -11,10 +11,10 @@ import java.io.InputStream;
 /**
  * Created by root on 24/12/14.
  */
-public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+public class Img2ImgView extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
 
-    public DownloadImageTask(ImageView bmImage) {
+    public Img2ImgView(ImageView bmImage) {
         this.bmImage = bmImage;
     }
 

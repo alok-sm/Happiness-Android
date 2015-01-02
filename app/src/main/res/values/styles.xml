@@ -2,5 +2,6 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#006600</item>
         <item name="colorPrimaryDark">#004400</item>
+        <item name="colorAccent">#006600</item>
     </style>
 </resources>

@@ -20,10 +20,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.andtinder.model.CardModel;
 import com.andtinder.view.CardContainer;
 import com.andtinder.view.SimpleCardStackAdapter;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.apache.http.Header;
 
 import java.io.File;
 import java.util.Timer;
@@ -47,21 +53,13 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
 
     public static int sectionNumber = 0;
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+    static SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cards);
-
-//        Thread t = new Thread() {
-//            @Override
-//            public void run() {
-//                String url = postToTwitter(new File("/sdcard/pic.jpg"), "pls work upload");
-//                Log.e("url ", url);
-//            }
-//        };
-//
-//        t.start();
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getSupportActionBar();
@@ -171,68 +169,117 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
 //            Bundle args = new Bundle();
             Log.e("CONTAINER ID: ", ""+ sectionNumber);
             if(sectionNumber == 0) {
+
+                final int topOfStack[] = {-1};
                 View rootView = inflater.inflate(R.layout.fragment_cards, container, false);
-                CardContainer mCardContainer = (CardContainer) rootView.findViewById(R.id.layoutview);
-                Resources r = getResources();
-                SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
+                final CardContainer mCardContainer = (CardContainer) rootView.findViewById(R.id.layoutview);
+                final SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                Bitmap bm = BitmapFactory.decodeFile(
-                        Environment.getExternalStorageDirectory() + "/pic2.jpg", options);
-                for (int i = 0; i < 10; i++) {
-                    CardModel cardModel = new CardModel("Title" + i, " ",
-                            new BitmapDrawable(getResources(),
-                                    Bitmap.createScaledBitmap(bm, 800, 600, false)
-                            )
-                    );
-//                    cardModel.set
-                    cardModel.setOnClickListener(new CardModel.OnClickListener() {
-                        @Override
-                        public void OnClickListener() {
-                            Log.i("places Swipeable Cards", "I am pressing the card");
-//                            startActivity(new Intent(getActivity(), PlacesDisplayActivity.class));
-                            liked = false;
-                            disliked = false;
 
-                            Timer timer = new Timer();
-                            timer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    if(liked){
-                                        Log.e("places Swipeable Cards", "I like the card");
-                                    }else if(disliked){
-                                        Log.e("places Swipeable Cards", "I dislike the card");
-                                    }else{
-                                        Log.e("places Swipeable cards", "I clicked the card");
-                                    }
-                                }
-                            }, 1000);
-                        }
+                AsyncHttpClient client = new AsyncHttpClient();
+                SimpleLocation location = new SimpleLocation(getActivity());
+                double lati = 0;
+                double longi = 0;
+                if (location.hasLocationEnabled()) {
+                    // ask the device to update the location data
+                    location.beginUpdates();
 
-                    });
 
-                    cardModel.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
-                        @Override
-                        public void onLike() {
+                    // get the location from the device (alternative A)
+                    lati = location.getLatitude();
+                    longi = location.getLongitude();
+                    System.out.println("Lat ad lon are"+lati+longi);
+                    // get the location from the device (alternative B)
+//                SimpleLocation.Point coords = location.getPosition();
 
-//                            getActivity().finish();
-                            disliked = true;
-                        }
-
-                        @Override
-                        public void onDislike() {
-//                            getActivity().finish();
-                            liked = true;
-                        }
-                    });
-
-                    adapter.add(cardModel);
+                    // ask the device to stop location updates to save battery
+                    location.endUpdates();
+                } else {
+                    // ask the user to enable location access
+                    location.openSettings(getActivity());
                 }
-                mCardContainer.setAdapter(adapter);
+                String getURL = "http://gentle-bayou-7778.herokuapp.com/android/populatePlace?lat="+
+                        lati+
+                        "&lon="+
+                        longi+
+                        "&user="+
+                        pref.getString("USER_ID", "");
+                Log.e("GetURL", getURL);
+                client.get(getURL,new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        String res = new String(responseBody);
+                        String[] postArr = res.split("`;");
 
+                        System.out.println("HAHA"+ postArr[0]);
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                ProgressBar pb = (ProgressBar) getActivity().findViewById(R.id.progressBar);
+                                pb.setVisibility(View.GONE);
+                            }
+                        });
+                        for(String postitem:postArr){
+                            topOfStack[0]++;
+                            final String[] items = postitem.split("`,");
+                            CardModel cardModel = new CardModel(items[1], " ",getResources().getDrawable(R.drawable.placeholder));
+                            cardModel.setCardImageDrawable(new BitmapDrawable(getResources(), ));
+                            new Img2CardView(getActivity(), cardModel).execute(items[2]);
+                            cardModel.setOnClickListener(new CardModel.OnClickListener() {
+                                @Override
+                                public void OnClickListener() {
+                                    Log.i("places Swipeable Cards", "I am pressing the card");
+                                    liked = false;
+                                    disliked = false;
+
+                                    Timer timer = new Timer();
+                                    timer.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            if(liked){
+                                                Log.e("places Swipeable Cards", "I like the card "+topOfStack[0]);
+
+                                                topOfStack[0]--;
+                                            }else if(disliked){
+                                                Log.e("places Swipeable Cards", "I dislike the card "+topOfStack[0]);
+                                                topOfStack[0]--;
+                                            }else{
+                                                Log.e("places Swipeable cards", "I clicked the card "+topOfStack[0]);
+                                                startActivity(new Intent(getActivity(), PlacesDisplayActivity.class));
+                                            }
+                                        }
+                                    }, 1000);
+                                }
+
+                            });
+
+                            cardModel.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
+                                @Override
+                                public void onLike() {
+                                    disliked = true;
+                                }
+
+                                @Override
+                                public void onDislike() {
+                                    liked = true;
+                                }
+                            });
+
+                            adapter.add(cardModel);
+                        }
+                        mCardContainer.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                    }
+                });
 
                 return rootView;
             }else{
+
+                final int topOfStack[] = {-1};
                 View rootView = inflater.inflate(R.layout.fragment_cards, container, false);
                 CardContainer mCardContainer = (CardContainer) rootView.findViewById(R.id.layoutview);
                 Resources r = getResources();
@@ -259,11 +306,14 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                 @Override
                                 public void run() {
                                     if(liked){
-                                        Log.e("actions Swipeable Cards", "I like the card");
+                                        Log.e("actions Swipeable Cards", "I like the card "+topOfStack[0]);
+                                        topOfStack[0]--;
                                     }else if(disliked){
-                                        Log.e("actions Swipeable Cards", "I dislike the card");
+                                        Log.e("actions Swipeable Cards", "I dislike the card "+topOfStack[0]);
+                                        topOfStack[0]--;
                                     }else{
-                                        Log.e("actions Swipeable cards", "I clicked the card");
+                                        Log.e("actions Swipeable cards", "I clicked the card "+topOfStack[0]);
+                                        startActivity(new Intent(getActivity(), PlacesDisplayActivity.class));
                                     }
                                 }
                             }, 1000);
@@ -297,5 +347,4 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
     public void newPost(MenuItem m){
         startActivity(new Intent(this, CameraActivity.class));
     }
-
 }

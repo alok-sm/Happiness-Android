@@ -33,7 +33,7 @@ public class DisplayActivity extends ActionBarActivity {
         String accessToken = pref.getString("ACCESS_TOKEN", "");
         String username = pref.getString("NAME", "");
         String photo_url = pref.getString("IMAGE_URL","");
-        new DownloadImageTask((ImageView) findViewById(R.id.imageView2)).execute(photo_url);
+        new Img2ImgView((ImageView) findViewById(R.id.imageView2)).execute(photo_url);
         AsyncHttpClient client = new AsyncHttpClient();
         String loginURL = "https://gentle-bayou-7778.herokuapp.com/android/login?token="+accessToken+"&name="+username+"&photo="+photo_url;
         client.get(loginURL, new AsyncHttpResponseHandler() {
