@@ -10,5 +10,5 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_reply"
-        android:onClick="postReply"/>
+        android:onClick="placeReply"/>
 </menu>
