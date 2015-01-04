@@ -200,12 +200,14 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                         String res = new String(responseBody);
                         final String[] postArr = res.split("`;");
                         System.out.println("HAHA"+ postArr[0]);
-                        getActivity().runOnUiThread(new Runnable() {
-                            public void run() {
-                                ProgressBar pb = (ProgressBar) getActivity().findViewById(R.id.progressBar);
-                                pb.setVisibility(View.GONE);
-                            }
-                        });
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    ProgressBar pb = (ProgressBar) getActivity().findViewById(R.id.progressBar);
+                                    pb.setVisibility(View.GONE);
+                                }
+                            });
+                        }catch(Exception e){}
                         Log.e("postArr.length", ""+postArr.length);
                         final boolean clientsDone[] = new boolean[postArr.length];
                         for(int i = 0; i < postArr.length; i++) {
@@ -258,6 +260,7 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                                         Log.e("places Swipeable Cards", "I dislike the card " + topOfStack[0]);
                                                         SyncHttpClient client = new SyncHttpClient();
                                                         String likeurl = "http://gentle-bayou-7778.herokuapp.com/android/downvotePlace?place=" + items[0] + "&user=" + pref.getString("USER_ID", "");
+                                                        Log.e("place dislike url", likeurl);
                                                         client.get(likeurl, new AsyncHttpResponseHandler() {
                                                             @Override
                                                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -398,7 +401,8 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                                     if (liked) {
                                                         Log.e("posts Swipeable Cards", "I like the card " + topOfStack[0] + items[1]);
                                                         SyncHttpClient client = new SyncHttpClient();
-                                                        String likeurl = "http://gentle-bayou-7778.herokuapp.com/android/upvotePost?place=" + items[0] + "&user=" + pref.getString("USER_ID", "");
+                                                        String likeurl = "http://gentle-bayou-7778.herokuapp.com/android/upvotePost?post=" + items[0] + "&user=" + pref.getString("USER_ID", "");
+                                                        Log.e("posts upvite url", likeurl);
                                                         client.get(likeurl, new AsyncHttpResponseHandler() {
                                                             @Override
                                                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -412,9 +416,11 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                                         });
                                                         topOfStack[0]--;
                                                     } else if (disliked) {
-                                                        Log.e("places Swipeable Cards", "I dislike the card " + topOfStack[0]);
+                                                        Log.e("places Swipeable Cards", "I dislike the card " + topOfStack[0]+items[1]);
                                                         SyncHttpClient client = new SyncHttpClient();
-                                                        String likeurl = "http://gentle-bayou-7778.herokuapp.com/android/downvotePost?place=" + items[0] + "&user=" + pref.getString("USER_ID", "");
+//                                                        postArr[topOfStack[0]].split("`,")[0]
+                                                        String likeurl = "http://gentle-bayou-7778.herokuapp.com/android/downvotePost?post=" + items[0] + "&user=" + pref.getString("USER_ID", "");
+                                                        Log.e("posts downvote url", likeurl);
                                                         client.get(likeurl, new AsyncHttpResponseHandler() {
                                                             @Override
                                                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

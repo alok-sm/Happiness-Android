@@ -151,7 +151,7 @@ public class NewPostActivity extends ActionBarActivity {
             params.put("access_token", pref.getString("ACCESS_TOKEN", ""));
             params.put("access_token_secret", pref.getString("ACCESS_TOKEN_SECRET", ""));
             params.put("caption", et.getText().toString());
-            params.put("placeid", placeid);
+            params.put("post", placeid);
             params.put("lat", lati);
             params.put("lon", longi);
             params.put("user", pref.getString("USER_ID", ""));
@@ -172,7 +172,7 @@ public class NewPostActivity extends ActionBarActivity {
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    Log.e("FAIL", "FAIL");
+                    Log.e("FAIL", "On Failure");
                 }
             });
         }

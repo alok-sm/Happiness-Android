@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".NewPlaceActivity"
-            android:label="@string/title_activity_camera" >
+            android:label="@string/title_activity_camera"
+            android:parentActivityName=".CardsActivity">
         </activity>
         <activity
             android:name=".DisplayActivity"
@@ -41,7 +42,8 @@
         </activity>
         <activity
             android:name=".PlacesDisplayActivity"
-            android:label="@string/title_activity_places_display" >
+            android:label="@string/title_activity_places_display"
+            android:parentActivityName=".CardsActivity">
         </activity>
         <activity
             android:name=".ActionsDisplayActivity"
@@ -49,11 +51,13 @@
         </activity>
         <activity
             android:name=".PostsDisplayActivity"
-            android:label="@string/title_activity_posts_display" >
+            android:label="@string/title_activity_posts_display"
+            android:parentActivityName=".CardsActivity">
         </activity>
         <activity
             android:name=".NewPostActivity"
-            android:label="@string/title_activity_new_posts" >
+            android:label="@string/title_activity_new_posts"
+            android:parentActivityName=".CardsActivity">
         </activity>
     </application>
 
