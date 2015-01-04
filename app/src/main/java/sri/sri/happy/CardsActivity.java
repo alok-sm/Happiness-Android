@@ -429,7 +429,7 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                                         topOfStack[0]--;
                                                     } else {
                                                         SharedPreferences.Editor edit = pref.edit();
-                                                        edit.putString("PLACE_ID", items[0]);
+                                                        edit.putString("POST_ID", items[0]);
                                                         edit.commit();
                                                         Log.e("posts Swipeable cards", "I clicked the card " + topOfStack[0]);
                                                         startActivity(new Intent(getActivity(), PostsDisplayActivity.class));
