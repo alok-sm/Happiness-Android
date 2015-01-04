@@ -32,13 +32,14 @@ import java.io.FileOutputStream;
 
 public class NewPostActivity extends ActionBarActivity {
 
-    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_place);
-
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
 
         Log.e("access token", pref.getString("ACCESS_TOKEN",""));
         Log.e("access token secret", pref.getString("ACCESS_TOKEN_SECRET",""));
@@ -161,7 +162,7 @@ public class NewPostActivity extends ActionBarActivity {
                 Log.e("NO FILE", "NO FILE");
             }
             AsyncHttpClient client = new AsyncHttpClient();
-            client.post("http://gentle-bayou-7778.herokuapp.com/android/createPlace", params, new AsyncHttpResponseHandler() {
+            client.post("http://gentle-bayou-7778.herokuapp.com/android/createPost", params, new AsyncHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
