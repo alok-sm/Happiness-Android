@@ -7,9 +7,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-
-import java.io.File;
 
 public class MainActivity extends ActionBarActivity {
     SharedPreferences pref;
@@ -45,7 +42,7 @@ public class MainActivity extends ActionBarActivity {
             ft.commit();
         }
         else{
-            startActivity(new Intent(this, DisplayActivity.class));
+            startActivity(new Intent(this, CardsActivity.class));
             finish();
         }
     }

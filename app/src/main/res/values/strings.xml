@@ -14,5 +14,7 @@
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_places_display">PlacesDisplayActivity</string>
     <string name="title_activity_actions_display">ActionsDisplayActivity</string>
+    <string name="title_activity_posts_display">PostsDisplayActivity</string>
+    <string name="title_activity_new_posts">NewPostsActivity</string>
 
 </resources>

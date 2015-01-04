@@ -30,19 +30,22 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 
-public class CameraActivity extends ActionBarActivity {
+public class NewPostActivity extends ActionBarActivity {
+
+    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
+        setContentView(R.layout.activity_new_place);
 
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         Log.e("access token", pref.getString("ACCESS_TOKEN",""));
         Log.e("access token secret", pref.getString("ACCESS_TOKEN_SECRET",""));
         Log.e("consumer key", pref.getString("CONSUMER_KEY",""));
         Log.e("consumer secret", pref.getString("CONSUMER_SECRET",""));
+
+
 
 
         Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -57,7 +60,7 @@ public class CameraActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_camera, menu);
+        getMenuInflater().inflate(R.menu.menu_new_place, menu);
         return true;
     }
 
@@ -65,6 +68,7 @@ public class CameraActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int _requestCode, int _resultCode, Intent data) {
+
         resultcode = _resultCode;
         String path = Environment.getExternalStorageDirectory() + "/pic1.jpg";
         File file = new File(path);
@@ -114,15 +118,11 @@ public class CameraActivity extends ActionBarActivity {
     }
 
     public void report(View view) {
+        String placeid = pref.getString("PLACE_ID", "");
 
         if (resultcode != Activity.RESULT_OK) {
-            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            String path = Environment.getExternalStorageDirectory() + "/pic2.jpg";
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(path)));
-            startActivityForResult(intent, 0);
+            finish();
         } else {
-
-
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
             SimpleLocation location = new SimpleLocation(this);
             double lati = 0;
@@ -150,6 +150,7 @@ public class CameraActivity extends ActionBarActivity {
             params.put("access_token", pref.getString("ACCESS_TOKEN", ""));
             params.put("access_token_secret", pref.getString("ACCESS_TOKEN_SECRET", ""));
             params.put("caption", et.getText().toString());
+            params.put("placeid", placeid);
             params.put("lat", lati);
             params.put("lon", longi);
             params.put("user", pref.getString("USER_ID", ""));
@@ -165,6 +166,7 @@ public class CameraActivity extends ActionBarActivity {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     Log.w("async", "success!!!!");
+                    startActivity(new Intent(getApplicationContext(), CardsActivity.class));
                 }
 
                 @Override

@@ -1,15 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context="sri.sri.happy.CardsActivity">
+
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+        android:id="@+id/action_view_profile"
+        android:title="View Profile"
         android:orderInCategory="100"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_action_person"
+        app:showAsAction="ifRoom"
+        android:onClick="viewProfile"/>
+
     <item
         android:id="@+id/action_new_post"
-        android:title="new post"
+        android:title="New Post"
         android:orderInCategory="100"
-        app:showAsAction="never"
+        android:icon="@drawable/ic_action_new"
+        app:showAsAction="ifRoom"
         android:onClick="newPost"/>
+
 </menu>

@@ -31,12 +31,13 @@
             android:label="@string/title_activity_cards" >
         </activity>
         <activity
-            android:name=".CameraActivity"
+            android:name=".NewPlaceActivity"
             android:label="@string/title_activity_camera" >
         </activity>
         <activity
             android:name=".DisplayActivity"
-            android:label="Profile" >
+            android:label="Profile"
+            android:parentActivityName=".CardsActivity" >
         </activity>
         <activity
             android:name=".PlacesDisplayActivity"
@@ -45,6 +46,14 @@
         <activity
             android:name=".ActionsDisplayActivity"
             android:label="@string/title_activity_actions_display" >
+        </activity>
+        <activity
+            android:name=".PostsDisplayActivity"
+            android:label="@string/title_activity_posts_display" >
+        </activity>
+        <activity
+            android:name=".NewPostActivity"
+            android:label="@string/title_activity_new_posts" >
         </activity>
     </application>
 

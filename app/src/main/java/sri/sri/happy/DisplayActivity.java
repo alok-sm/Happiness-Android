@@ -19,36 +19,30 @@ import org.apache.http.Header;
 
 
 public class DisplayActivity extends ActionBarActivity {
-    ImageView iv;
     TextView t1,t2;
     SharedPreferences pref;
-    Button next;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-        t1 = (TextView)findViewById(R.id.textView);
         t2 = (TextView)findViewById(R.id.textView2);
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         String accessToken = pref.getString("ACCESS_TOKEN", "");
         String username = pref.getString("NAME", "");
         String photo_url = pref.getString("IMAGE_URL","");
+        String screenname = pref.getString("SCREEN_NAME", "");
+        getSupportActionBar().setTitle(username);
         new Img2ImgView((ImageView) findViewById(R.id.imageView2)).execute(photo_url);
         AsyncHttpClient client = new AsyncHttpClient();
         String loginURL = "https://gentle-bayou-7778.herokuapp.com/android/login?token="+accessToken+"&name="+username+"&photo="+photo_url;
         client.get(loginURL, new AsyncHttpResponseHandler() {
 
             @Override
-            public void onStart() {
-                //
-            }
-
-            @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 String res = new String(response);
                 System.out.println("hisss"+res);
                 String[] repArr = res.split(",");
-                t2.setText("Points:"+repArr[3]);
+                t2.setText("Karma Points: "+repArr[3]);
                 SharedPreferences.Editor edit = pref.edit();
                 edit.putString("USER_ID", repArr[0]);
                 edit.commit();
@@ -64,15 +58,6 @@ public class DisplayActivity extends ActionBarActivity {
                 // called when request is retried
             }
         });
-
-        t1.setText(username);
-        next = (Button)findViewById(R.id.button2);
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), CardsActivity.class));
-            }
-        });
     }
 
 
@@ -83,18 +68,12 @@ public class DisplayActivity extends ActionBarActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void logOut(MenuItem item) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putString("ACCESS_TOKEN", "");
+        edit.putString("ACCESS_TOKEN_SECRET", "");
+        edit.commit();
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
