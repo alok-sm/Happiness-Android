@@ -113,7 +113,7 @@ public class NewPlaceActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void report(View view) {
+    public void report(MenuItem view) {
 
         if (resultcode != Activity.RESULT_OK) {
             finish();

@@ -118,7 +118,7 @@ public class NewPostActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void report(View view) {
+    public void report(MenuItem item){
         String placeid = pref.getString("PLACE_ID", "");
 
         if (resultcode != Activity.RESULT_OK) {
@@ -177,4 +177,5 @@ public class NewPostActivity extends ActionBarActivity {
             });
         }
     }
+
 }

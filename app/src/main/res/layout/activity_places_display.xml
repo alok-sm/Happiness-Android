@@ -1,12 +1,35 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="sri.sri.happy.PlacesDisplayActivity">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/placeimgv"/>
 
-    <TextView android:text="places display" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:layout_height="wrap_content"
+            android:id="@+id/placetxtv"
+            android:text="Hello"/>
+    </LinearLayout>
 
-</RelativeLayout>
+    <fragment
+        android:id="@+id/mapView"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@android:layout/activity_list_item" />
+
+</LinearLayout>

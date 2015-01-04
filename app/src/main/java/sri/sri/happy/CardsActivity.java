@@ -1,5 +1,7 @@
 package sri.sri.happy;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -34,21 +36,40 @@ import java.util.TimerTask;
 
 
 public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavigationListener {
-
-    /**
-     * The serialization (saved instance state) Bundle key representing the
-     * current dropdown position.
-     */
-
     public static int sectionNumber = 0;
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-   static SharedPreferences pref;
+    static SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cards);
+
+        final String PREFS_NAME = "MyPrefsFile";
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+        if (settings.getBoolean("my_first_time", true)) {
+            //the app is being launched for first time, do something
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Swipe Left to dislike, Right to like and Click to reply to the post")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+            SharedPreferences.Editor edit = pref.edit();
+            edit.putString("FIRST_TIME", "one");
+            edit.commit();
+            // first time task
+
+            // record the fact that the app has been started at least once
+            settings.edit().putBoolean("my_first_time", false).commit();
+        }
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getSupportActionBar();
@@ -226,7 +247,7 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                 public void onSuccess(int statusCode, Header[] headers, byte[] fileData) {
 
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(fileData, 0, fileData.length);
-                                    CardModel cardModel = new CardModel(items[1], " ", new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 800, 600, false)));
+                                    CardModel cardModel = new CardModel(items[1],  items[5]+"↑ , "+items[6]+"↓", new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 800, 600, false)));
                                     cardModel.setOnClickListener(new CardModel.OnClickListener() {
                                         @Override
                                         public void OnClickListener() {
@@ -276,6 +297,13 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                                     } else {
                                                         SharedPreferences.Editor edit = pref.edit();
                                                         edit.putString("PLACE_ID", items[0]);
+                                                        edit.putString("PLACE_CAPTION", items[1]);
+                                                        edit.putString("PLACE_IMAGE_URL", items[2]);
+                                                        edit.putString("PLACE_LAT", items[3]);
+                                                        edit.putString("PLACE_LON", items[4]);
+                                                        edit.putString("PLACE_UPVOTES", items[5]);
+                                                        edit.putString("PLACE_DOWNVOTES", items[6]);
+                                                        edit.putString("PLACE_TIME", items[7]);
                                                         edit.commit();
                                                         Log.e("places Swipeable cards", "I clicked the card " + topOfStack[0]);
                                                         startActivity(new Intent(getActivity(), PlacesDisplayActivity.class));
@@ -384,7 +412,7 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                 public void onSuccess(int statusCode, Header[] headers, byte[] fileData) {
 
                                     Bitmap bitmap = BitmapFactory.decodeByteArray(fileData, 0, fileData.length);
-                                    CardModel cardModel = new CardModel(items[1], " ", new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 800, 600, false)));
+                                    CardModel cardModel = new CardModel(items[1], items[5]+"↑ , "+items[6]+"↓", new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 800, 600, false)));
                                     cardModel.setOnClickListener(new CardModel.OnClickListener() {
                                         @Override
                                         public void OnClickListener() {
@@ -436,6 +464,13 @@ public class CardsActivity extends ActionBarActivity implements ActionBar.OnNavi
                                                     } else {
                                                         SharedPreferences.Editor edit = pref.edit();
                                                         edit.putString("POST_ID", items[0]);
+                                                        edit.putString("POST_CAPTION", items[1]);
+                                                        edit.putString("POST_IMAGE_URL", items[2]);
+                                                        edit.putString("POST_LAT", items[3]);
+                                                        edit.putString("POST_LON", items[4]);
+                                                        edit.putString("POST_UPVOTES", items[5]);
+                                                        edit.putString("POST_DOWNVOTES", items[6]);
+                                                        edit.putString("POST_TIME", items[7]);
                                                         edit.commit();
                                                         Log.e("posts Swipeable cards", "I clicked the card " + topOfStack[0]);
                                                         startActivity(new Intent(getActivity(), PostsDisplayActivity.class));

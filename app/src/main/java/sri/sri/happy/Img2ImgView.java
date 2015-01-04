@@ -16,14 +16,18 @@ import android.widget.ImageView;
 
 import java.io.InputStream;
 
-/**
- * Created by root on 24/12/14.
- */
 public class Img2ImgView extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
+    boolean cropToCircle;
+
+    public Img2ImgView(ImageView bmImage, boolean _cropToCircle) {
+        this.bmImage = bmImage;
+        cropToCircle = _cropToCircle;
+    }
 
     public Img2ImgView(ImageView bmImage) {
         this.bmImage = bmImage;
+        cropToCircle = false;
     }
 
     protected Bitmap doInBackground(String... urls) {
@@ -40,8 +44,8 @@ public class Img2ImgView extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap result) {
-
-        bmImage.setImageBitmap(getCircleBitmap(result));
+        if(cropToCircle)result = getCircleBitmap(result);
+        bmImage.setImageBitmap(result);
     }
 
     public static Bitmap getCircleBitmap(Bitmap bm) {

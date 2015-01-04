@@ -20,17 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editText"
-        android:layout_above="@+id/button"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Place"
-        android:id="@+id/button"
-        android:layout_gravity="bottom"
-        android:onClick="report"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
